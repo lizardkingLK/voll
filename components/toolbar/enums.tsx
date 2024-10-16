@@ -1,5 +1,5 @@
 export enum toolTypes {
-    arrow,
+    select,
     text,
     circle,
     rectangle,

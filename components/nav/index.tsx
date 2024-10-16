@@ -7,13 +7,13 @@ import { CommonProps } from "../types";
 export default function Navigation({ className }: CommonProps) {
   return (
     <nav className={className}>
-      <div>
+      <div className="pl-4">
         <Link href={"/"}>VOLL</Link>
       </div>
       <div>
         <Toolbar />
       </div>
-      <div>
+      <div className="pr-4">
         <ThemeToggle />
       </div>
     </nav>

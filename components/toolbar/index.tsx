@@ -1,39 +1,44 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { buttonMap } from "./buttons";
 import { toolTypes } from "./enums";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { usePaperStore } from "../state";
-import { cursors } from "./constants";
+import { usePaperStore } from "../voll/paper/state";
+import { useVollStore } from "../voll/state";
 
 export default function Toolbar() {
-  const { paper } = usePaperStore((state) => state);
-  const [activeButton, setActiveButton] = useState<toolTypes | null>(null);
-  const [activeCursor, setActiveCursor] = useState<string>(cursors.pointer);
-
-  const handleCursor = useCallback(() => {
-    const current = paper?.current as HTMLDivElement | null;
-    if (!current) {
-      return;
-    }
-
-    current.classList.remove(...Object.values(cursors));
-    current.classList.add(activeCursor);
-  }, [activeCursor]);
+  const { activeTool, setActiveCursor, setActiveTool } = useVollStore(
+    (state) => state
+  );
+  const { elements, setElements, cordinate, cordinates, setCordinates } =
+    usePaperStore((state) => state);
 
   const handleClick = (toolType: toolTypes, cursor: string) => {
-    const voll = paper?.current;
-    if (!voll) {
+    setActiveCursor(cursor);
+    setActiveTool(toolType);
+  };
+
+  const toggleDraw = useCallback(() => {
+    let tempElements = elements;
+    let tempCordinates = cordinates;
+    if (!cordinate) {
       return;
     }
 
-    console.log(voll);
+    tempCordinates.push(cordinate);
 
-    switch (toolType) {
-      case toolTypes.line:
+    switch (activeTool) {
+      case toolTypes.select:
         {
+          if (tempCordinates.length === 2) {
+            tempElements = tempElements.filter(
+              (element) => element.tool !== toolTypes.select
+            );
+            tempElements.push({ tool: activeTool, cordinates: tempCordinates });
+            tempCordinates = [];
+          }
         }
         break;
 
@@ -41,18 +46,19 @@ export default function Toolbar() {
         break;
     }
 
-    setActiveCursor(cursor);
-    setActiveButton(toolType);
-  };
+    setCordinates(tempCordinates);
+    setElements(tempElements);
+  }, [cordinate]);
 
   useEffect(() => {
-    handleCursor();
-  }, [handleCursor]);
+    toggleDraw();
+  }, [toggleDraw]);
 
   return (
     <div className="flex space-x-4 items-center">
       {buttonMap.map((button, index) => {
         const { icon, type, cursor } = button;
+
         return (
           <Button
             key={index}
@@ -60,8 +66,8 @@ export default function Toolbar() {
             variant={"ghost"}
             size={"icon"}
             className={cn(
-              activeButton === type ? "text-primary" : "",
-              "hover:text-primary"
+              "hover:text-primary focus-visible:ring-0",
+              activeTool === type ? "text-primary" : ""
             )}
           >
             {icon}

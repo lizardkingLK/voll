@@ -1,11 +1,11 @@
 import { Circle, Square, Slash, TextCursor, BoxSelect } from "lucide-react";
 import { toolTypes } from "./enums";
-import { cursors } from "./constants";
+import { cursors } from "../constants";
 
 export const buttonMap = [
   {
     icon: <BoxSelect />,
-    type: toolTypes.arrow,
+    type: toolTypes.select,
     cursor: cursors.pointer,
   },
   {
