@@ -1,21 +1,14 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { usePaperStore } from "./state";
 import { CommonProps } from "@/components/types";
 import { createSelection } from "./utils";
 import { toolTypes } from "@/components/toolbar/enums";
+import { eventTypes } from "./enums";
 
 export default function Canvas({ className }: CommonProps) {
   const paperRef = useRef(null);
-  const { elements, initializePaper, clickedEvent } = usePaperStore(
+  const { elements, initializePaper, mouseEvent } = usePaperStore(
     (state) => state
-  );
-
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      console.log("trigger");
-      clickedEvent(event);
-    },
-    []
   );
 
   useEffect(() => {
@@ -23,11 +16,17 @@ export default function Canvas({ className }: CommonProps) {
   }, []);
 
   return (
-    <div ref={paperRef} className={className} onClick={handleClick}>
+    <div
+      ref={paperRef}
+      className={className}
+      onMouseDown={(event) => mouseEvent(event, eventTypes.down)}
+      onMouseMove={(event) => mouseEvent(event, eventTypes.move)}
+      onMouseUp={(event) => mouseEvent(event, eventTypes.up)}
+    >
       {elements.map(({ cordinates, tool }, index) => {
         if (tool === toolTypes.select) {
           const [cordinateStart, cordinateEnd] = cordinates;
-          console.log(elements.length);
+          // console.log(elements.length);
 
           return createSelection(cordinateStart, cordinateEnd, index);
         }

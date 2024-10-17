@@ -8,6 +8,7 @@ export const createSelection = (
   key: string | number
 ) => {
   const { x: startX, y: startY } = cordinateStart;
+  cordinateEnd = cordinateEnd ?? cordinateStart;
   const { x: endX, y: endY } = cordinateEnd;
 
   const width = Math.abs(startX - endX);

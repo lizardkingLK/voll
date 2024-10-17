@@ -1,9 +1,6 @@
 import { create } from "zustand";
-import {
-  cordinatesType,
-  createElementInputType,
-  paperStoreState,
-} from "./types";
+import { createElementInputType, paperStoreState } from "./types";
+import { eventTypes } from "./enums";
 
 export const usePaperStore = create<paperStoreState>((set) => ({
   elements: [],
@@ -12,12 +9,15 @@ export const usePaperStore = create<paperStoreState>((set) => ({
   paper: null,
   initializePaper: (state: React.MutableRefObject<null>) =>
     set(() => ({ paper: state })),
-  cordinates: [],
-  setCordinates: (state: cordinatesType[]) =>
-    set(() => ({ cordinates: state })),
   cordinate: null,
-  clickedEvent: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+  eventType: null,
+  mouseEvent: (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    eventType: eventTypes
+  ) =>
     set(() => ({
       cordinate: { x: event.clientX, y: event.clientY },
+      eventType: eventType,
     })),
+  clearEventType: () => set(() => ({ eventType: null })),
 }));

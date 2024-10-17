@@ -1,5 +1,6 @@
 import { toolTypes } from "@/components/toolbar/enums";
 import { MutableRefObject } from "react";
+import { eventTypes } from "./enums";
 
 export type cordinatesType = { x: number; y: number };
 
@@ -13,8 +14,11 @@ export type paperStoreState = {
   setElements: (state: createElementInputType[]) => void;
   paper: MutableRefObject<null> | null;
   initializePaper: (state: MutableRefObject<null>) => void;
-  cordinates: cordinatesType[];
-  setCordinates: (state: cordinatesType[]) => void;
   cordinate: cordinatesType | null;
-  clickedEvent: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  eventType: eventTypes | null;
+  mouseEvent: (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    eventType: eventTypes
+  ) => void;
+  clearEventType: () => void;
 };
